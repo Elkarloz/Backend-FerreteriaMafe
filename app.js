@@ -13,11 +13,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
   res.send('Hello World!');
-});
+}); */
 
-app.use('/api/ejemplo',require('./routers/ejemplo.js'))
+app.use('/api/proveedor',require('./routers/Provedor.js'))
 
 
 // Middleware para Vue.js router modo history
