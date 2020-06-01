@@ -18,6 +18,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 }); */
 
 app.use('/api/proveedor',require('./routers/Provedor.js'))
+app.use('/api/producto',require('./routers/Productos.js'))
+app.use('/api/salida_entrada',require('./routers/Entrada_Salida.js'))
+app.use('/api/buscar_mov',require('./routers/Buscar_Mov.js'))
 
 
 // Middleware para Vue.js router modo history

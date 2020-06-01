@@ -29,12 +29,10 @@ router.get('/:codigo', async function(req, res){
 router.post('/', async function(req, res){
     const {ProvNit,ProvTelefono,ProvEmail,ProvNEmpresa,ProvTipProducto,ProvCiudad,ProvDireccion}=req.body;
     console.log(req.body);
-    conexion.query('INSERT INTO tblprovedor VALUES(null,?,?,?,?,?,?,?)',
+    conexion.query('CALL Agregar_Prov(?,?,?,?,?,?,?)',
     [ProvNit,ProvTelefono,ProvEmail,ProvNEmpresa,ProvTipProducto,ProvCiudad,ProvDireccion],(err,result) =>{
         try {
-            res.json({
-               message: 'Agregado correctamente'
-            })
+            res.json(result[0][0].message)
         } catch (error) {
             res.status(500).json({
                 message: 'Ocurrio un error'
@@ -74,4 +72,15 @@ router.delete('/:codigo', async function(req, res){
     }) 
 });
 
+router.get('/param/:nombre', async function(req, res){
+    conexion.query('SELECT * FROM tblprovedor WHERE ProvNEmpresa = ?',[req.params.nombre],(err,result) =>{
+        try {
+            res.json(result);
+        } catch (error) {
+            res.status(500).json({
+                message: 'Ocurrio un error'
+            })
+        }
+    }) 
+});
 module.exports=router; // exportando las rutas 
