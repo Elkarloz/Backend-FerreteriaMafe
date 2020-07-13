@@ -11,7 +11,7 @@
  Target Server Version : 100408
  File Encoding         : 65001
 
- Date: 01/06/2020 10:57:41
+ Date: 30/06/2020 20:36:09
 */
 
 SET NAMES utf8mb4;
@@ -34,14 +34,7 @@ CREATE TABLE `tblmovimiento`  (
   INDEX `MovProducto`(`MovProducto`) USING BTREE,
   CONSTRAINT `MovProducto` FOREIGN KEY (`MovProducto`) REFERENCES `tblproducto` (`ProdId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `MovProveedor` FOREIGN KEY (`MovProveedor`) REFERENCES `tblprovedor` (`ProvId`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tblmovimiento
--- ----------------------------
-INSERT INTO `tblmovimiento` VALUES (29, 109, 8, 100, 'Entrada', '2020-05-25', 10000);
-INSERT INTO `tblmovimiento` VALUES (30, 109, 8, 10, 'Salida', '2020-05-26', 100);
-INSERT INTO `tblmovimiento` VALUES (31, 127, 9, 500, 'Entrada', '2020-05-30', 200000);
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tblproducto
@@ -59,14 +52,7 @@ CREATE TABLE `tblproducto`  (
   PRIMARY KEY (`ProdId`) USING BTREE,
   INDEX `ProdMarca`(`ProdMarca`) USING BTREE,
   INDEX `ProdCategoria`(`ProdNombre`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tblproducto
--- ----------------------------
-INSERT INTO `tblproducto` VALUES (8, 'Tejas', 'Pepito', 'b', 'asdasd', 1000, 100, 90);
-INSERT INTO `tblproducto` VALUES (9, 'Tornillo', 'Torniquete', 'B', 'Mal estado', 1000, 100, 500);
-INSERT INTO `tblproducto` VALUES (10, 'Bombillos', 'Cacki', 'd', NULL, 1600, 123, 0);
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tblprovedor
@@ -82,13 +68,7 @@ CREATE TABLE `tblprovedor`  (
   `ProvCiudad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ProvDireccion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`ProvId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 128 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of tblprovedor
--- ----------------------------
-INSERT INTO `tblprovedor` VALUES (109, '213123', '3173731515', 'croameneses@gmail.com', 'Elpapu', 'Puntillas', 'Florencia, Caquetá', '16142 Cra. 8 ');
-INSERT INTO `tblprovedor` VALUES (127, '123', '123123', 'croameneses@gmail.com', 'Seif', 'Lamadre', 'asdasd', 'asd');
+) ENGINE = InnoDB AUTO_INCREMENT = 130 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Procedure structure for Actualizar_Prov
@@ -144,17 +124,16 @@ IF(Estado='Entrada')THEN
 
 	SET llaveProd=(SELECT ProdId FROM tblproducto WHERE ProdNombre = NProducto);
 	SET llaveProv=(SELECT ProvId FROM tblprovedor WHERE ProvNEmpresa = NEmpresa);
-
-	UPDATE tblproducto SET ProdDescripcion = Descripcion, ProdStock = Cantidad WHERE ProdId = llaveProd;
+	SET NCandidad=(SELECT SUM(MovCantidad) FROM tblmovimiento INNER JOIN tblproducto ON tblmovimiento.MovProducto = tblproducto.ProdId WHERE ProdNombre = NProducto);
+	SET CantidadAux=NCandidad+Cantidad;
+	UPDATE tblproducto SET ProdDescripcion = Descripcion, ProdStock = CantidadAux WHERE ProdId = llaveProd;
   INSERT INTO tblmovimiento VALUES(null,llaveProv,llaveProd,Cantidad,Estado,Fecha,Total); 
 
 ELSE
 
-	
-
-	SET NCandidad=(SELECT MovCantidad FROM tblmovimiento INNER JOIN tblproducto ON tblmovimiento.MovProducto = tblproducto.ProdId WHERE ProdNombre = NProducto);
+	SET NCandidad=(SELECT SUM(MovCantidad) FROM tblmovimiento INNER JOIN tblproducto ON tblmovimiento.MovProducto = tblproducto.ProdId WHERE ProdNombre = NProducto);
 	SET CantidadAux=NCandidad-Cantidad;
-	SET LlaveMov=(SELECT MovId FROM tblmovimiento INNER JOIN tblproducto ON tblmovimiento.MovProducto = tblproducto.ProdId WHERE ProdNombre = NProducto);
+	SET LlaveMov=(SELECT MovId FROM tblmovimiento INNER JOIN tblproducto ON tblmovimiento.MovProducto = tblproducto.ProdId WHERE ProdNombre = NProducto order by MovId desc limit 1);
 	SET llaveProd=(SELECT ProdId FROM tblproducto WHERE ProdNombre = NProducto);
 	SET llaveProv=(SELECT ProvId FROM tblprovedor WHERE ProvNEmpresa = NEmpresa);
 	
