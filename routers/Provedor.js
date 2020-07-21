@@ -4,7 +4,7 @@ const conexion = require('../modelo/dbconexion.js'); // importando el modelo
 
 
 router.get('/', async function(req, res){
-    conexion.query('SELECT * FROM tblprovedor',(err,result) =>{
+    conexion.query('SELECT * FROM tblprovedor WHERE ProvEstado = "Activo"',(err,result) =>{
         try {
             res.json(result);
         } catch (error) {
@@ -58,12 +58,14 @@ router.put('/', async function(req, res){
     }) 
 });
 
-router.delete('/:codigo', async function(req, res){
-    conexion.query('DELETE FROM tblprovedor WHERE ProvId = ?',[req.params.codigo],(err,result) =>{
+router.post('/eliminar', async function(req, res){
+    console.log(req.body);
+    const {Codigo}=req.body;
+    
+    conexion.query('CALL EliminarProv(?)',
+    [Codigo],(err,result) =>{
         try {
-            res.json({
-               message: 'Eliminado correctamente'
-            })
+            res.json(result)
         } catch (error) {
             res.status(500).json({
                 message: 'Ocurrio un error'
