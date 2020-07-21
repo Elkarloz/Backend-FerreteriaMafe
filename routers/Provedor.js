@@ -4,7 +4,7 @@ const conexion = require('../modelo/dbconexion.js'); // importando el modelo
 
 
 router.get('/', async function(req, res){
-    conexion.query('SELECT * FROM tblprovedor',(err,result) =>{
+    conexion.query('SELECT * FROM tblprovedor WHERE ProvEstado = "Activo"',(err,result) =>{
         try {
             res.json(result);
         } catch (error) {
