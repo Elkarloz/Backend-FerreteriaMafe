@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : Localhost
  Source Server Type    : MySQL
  Source Server Version : 100408
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 100408
  File Encoding         : 65001
 
- Date: 30/06/2020 20:36:09
+ Date: 20/07/2020 19:25:12
 */
 
 SET NAMES utf8mb4;
@@ -34,7 +34,11 @@ CREATE TABLE `tblmovimiento`  (
   INDEX `MovProducto`(`MovProducto`) USING BTREE,
   CONSTRAINT `MovProducto` FOREIGN KEY (`MovProducto`) REFERENCES `tblproducto` (`ProdId`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `MovProveedor` FOREIGN KEY (`MovProveedor`) REFERENCES `tblprovedor` (`ProvId`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 41 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of tblmovimiento
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tblproducto
@@ -52,7 +56,11 @@ CREATE TABLE `tblproducto`  (
   PRIMARY KEY (`ProdId`) USING BTREE,
   INDEX `ProdMarca`(`ProdMarca`) USING BTREE,
   INDEX `ProdCategoria`(`ProdNombre`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of tblproducto
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tblprovedor
@@ -67,8 +75,14 @@ CREATE TABLE `tblprovedor`  (
   `ProvTipProducto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ProvCiudad` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `ProvDireccion` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `ProvEstado` enum('Activo','Inactivo') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`ProvId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 130 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 132 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of tblprovedor
+-- ----------------------------
+INSERT INTO `tblprovedor` VALUES (131, 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'Inactivo');
 
 -- ----------------------------
 -- Procedure structure for Actualizar_Prov
@@ -181,8 +195,26 @@ CREATE PROCEDURE `Agregar_Prov`(IN nit VARCHAR ( 100 ),
 	IN Ciudad VARCHAR ( 100 ),
 	IN direccion VARCHAR ( 100 ))
 BEGIN
-		INSERT INTO tblprovedor VALUES(null,nit,telefono,email,NEmpresa,TipoProduc,Ciudad,direccion);
+		INSERT INTO tblprovedor VALUES(null,nit,telefono,email,NEmpresa,TipoProduc,Ciudad,direccion,"Activo");
 		SELECT 'Agregado correctamente' AS message;
+END
+;;
+delimiter ;
+
+-- ----------------------------
+-- Procedure structure for EliminarProv
+-- ----------------------------
+DROP PROCEDURE IF EXISTS `EliminarProv`;
+delimiter ;;
+CREATE PROCEDURE `EliminarProv`(IN Codigo INT)
+BEGIN
+
+UPDATE tblprovedor
+SET ProvEstado="Inactivo"
+	WHERE
+		ProvId = Codigo;
+	SELECT 'Eliminado correctamente' AS message;
+
 END
 ;;
 delimiter ;
