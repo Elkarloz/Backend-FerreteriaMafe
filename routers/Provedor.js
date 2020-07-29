@@ -59,11 +59,9 @@ router.put('/', async function(req, res){
 });
 
 router.post('/eliminar', async function(req, res){
-    console.log(req.body);
-    const {Codigo}=req.body;
-    
+    const {id}=req.body;
     conexion.query('CALL EliminarProv(?)',
-    [Codigo],(err,result) =>{
+    [id],(err,result) =>{
         try {
             res.json(result)
         } catch (error) {
