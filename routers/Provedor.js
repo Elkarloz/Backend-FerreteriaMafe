@@ -72,11 +72,12 @@ router.post('/eliminar', async function(req, res){
     }) 
 });
 
-router.get('/param/:nombre', async function(req, res){
-    conexion.query('SELECT * FROM tblprovedor WHERE ProvNEmpresa = ?',[req.params.nombre],(err,result) =>{
+router.get('/params/:nombre', async function(req, res){
+    conexion.query("SELECT * FROM tblprovedor WHERE ProvNEmpresa LIKE '%"+ req.params.nombre +"%'",(err,result) =>{
         try {
             res.json(result);
         } catch (error) {
+            console.log(error)
             res.status(500).json({
                 message: 'Ocurrio un error'
             })
